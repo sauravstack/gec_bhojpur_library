@@ -43,43 +43,69 @@ pip install -r requirements.txt
 Create a MySQL database named `library_db`, then run the following SQL:
 
 ```sql
-CREATE DATABASE IF NOT EXISTS library_db;
+CREATE DATABASE library_db;
 USE library_db;
 
-CREATE TABLE IF NOT EXISTS admins (
-  admin_id INT AUTO_INCREMENT PRIMARY KEY,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS books (
-  book_id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  author VARCHAR(255) NOT NULL,
-  isbn VARCHAR(100) NOT NULL,
-  category VARCHAR(120) NOT NULL,
-  quantity INT NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS users (
-  user_id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE
-);
-
-CREATE TABLE IF NOT EXISTS issued_books (
-  issue_id INT AUTO_INCREMENT PRIMARY KEY,
-  book_id INT NOT NULL,
-  user_id INT NOT NULL,
-  issue_date DATE NOT NULL,
-  return_date DATE NULL,
-  FOREIGN KEY (book_id) REFERENCES books(book_id),
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+CREATE TABLE admins (
+    admin_id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) UNIQUE,
+    password VARCHAR(100)
 );
 
 INSERT INTO admins (email, password)
-VALUES ('admin@library.com', 'admin123')
-ON DUPLICATE KEY UPDATE email = email;
+VALUES ('admin@library.com', 'admin123');
+
+CREATE TABLE books (
+    book_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200),
+    author VARCHAR(200),
+    isbn VARCHAR(50) UNIQUE,
+    category VARCHAR(100),
+    quantity INT
+);
+
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150),
+    email VARCHAR(100) UNIQUE
+);
+
+CREATE TABLE issued_books (
+    issue_id INT AUTO_INCREMENT PRIMARY KEY,
+    book_id INT,
+    user_id INT,
+    issue_date DATE,
+    return_date DATE,
+    FOREIGN KEY (book_id) REFERENCES books(book_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+SHOW TABLES;
+
+INSERT INTO books (title, author, isbn, category, quantity)
+VALUES
+('Database Systems', 'Elmasri', '9780133970777', 'Engineering', 5),
+('Operating System', 'Galvin', '9781118063330', 'Engineering', 3);
+
+INSERT INTO users (name, email)
+VALUES
+('karan Kumar','karan@email.com'),
+('saurav sharma','saurav@email.com'),
+('manish Kumar','manish@email.com');
+
+SELECT 
+users.name AS user_name,
+books.title AS book_title,
+issued_books.issue_date,
+issued_books.return_date
+FROM issued_books
+JOIN users ON issued_books.user_id = users.user_id
+JOIN books ON issued_books.book_id = books.book_id;
+
+SHOW TABLES;
+SELECT * FROM books;
+SELECT * FROM users;
+SELECT * FROM books;
 ```
 
 ## Configuration
