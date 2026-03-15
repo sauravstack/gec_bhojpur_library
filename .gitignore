@@ -1,0 +1,17 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# OS files
+desktop.ini
+.DS_Store
+
+# Editor/workspace
+.vscode/
+
+# Logs
+*.log

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-0: #020a1d;
+    --bg-1: #081735;
+    --bg-2: #0f2745;
+    --panel: rgba(16, 29, 58, 0.72);
+    --panel-strong: rgba(20, 35, 66, 0.95);
+    --line: rgba(168, 200, 255, 0.2);
+    --text: #f0f6ff;
+    --muted: #98adc8;
+    --glow: #21d2d8;
+    --lime: #a4ea2a;
+    --danger: #ef4a58;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: "Manrope", sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at 18% 4%, rgba(25, 80, 147, 0.42), transparent 34%),
+        radial-gradient(circle at 50% 42%, rgba(26, 151, 178, 0.18), transparent 32%),
+        linear-gradient(180deg, #04112d 0%, #02091b 42%, #020716 100%);
+    background-attachment: fixed;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mix-blend-mode: screen;
+    z-index: -1;
+}
+
+.dashboard {
+    width: min(1180px, 92vw);
+    margin: 34px auto 64px;
+}
+
+.header-card {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(120deg, rgba(25, 40, 77, 0.86), rgba(14, 36, 72, 0.78));
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 18px 22px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.header-card::after {
+    content: "";
+    position: absolute;
+    inset: auto -15% -180% auto;
+    width: 320px;
+    height: 320px;
+    border-radius: 999px;
+    background: radial-gradient(circle at center, rgba(33, 210, 216, 0.34), transparent 65%);
+    pointer-events: none;
+}
+
+.headline small {
+    display: block;
+    font-family: "Sora", sans-serif;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: #94b5de;
+    margin-bottom: 6px;
+}
+
+.headline h1 {
+    margin: 0;
+    font-family: "Sora", sans-serif;
+    font-size: clamp(28px, 3vw, 44px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(146, 177, 219, 0.2);
+    background: rgba(9, 19, 40, 0.64);
+    color: #deecff;
+    font-size: 14px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.logout-btn {
+    border: 1px solid rgba(164, 234, 42, 0.5);
+    background: rgba(20, 30, 54, 0.9);
+    color: #daf5ab;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.logout-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(31, 44, 76, 0.95);
+    box-shadow: 0 0 0 4px rgba(164, 234, 42, 0.14);
+}
+
+.hero {
+    margin-top: 22px;
+    padding: 18px;
+    border-radius: 26px;
+    background: linear-gradient(120deg, rgba(20, 36, 68, 0.86), rgba(14, 24, 46, 0.82));
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+}
+
+.hero-media {
+    border-radius: 20px;
+    min-height: 260px;
+}
+
+.hero-gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.hero-image {
+    position: relative;
+    width: 100%;
+    height: min(34vw, 360px);
+    min-height: 220px;
+    background-size: cover;
+    background-position: center;
+    filter: saturate(0.9) brightness(0.8);
+    border-radius: 14px;
+    border: 1px solid rgba(168, 200, 255, 0.25);
+    overflow: hidden;
+}
+
+.hero-image::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(4, 10, 24, 0.06) 35%, rgba(4, 10, 24, 0.78) 100%);
+    pointer-events: none;
+}
+
+.hero-copy {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    padding: 18px 22px;
+}
+
+.hero-copy p {
+    margin: 0;
+    max-width: 64ch;
+    font-size: clamp(14px, 1.3vw, 19px);
+    line-height: 1.4;
+    color: #f7fbff;
+    text-wrap: balance;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.72);
+    letter-spacing: 0;
+    font-weight: 500;
+}
+
+.stats-grid {
+    margin-top: 22px;
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.stat-card {
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: linear-gradient(120deg, rgba(18, 31, 61, 0.82), rgba(12, 23, 46, 0.84));
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(33, 210, 216, 0.16), transparent 50%);
+    pointer-events: none;
+}
+
+.stat-label {
+    margin: 0;
+    font-family: "Sora", sans-serif;
+    letter-spacing: 0.23em;
+    text-transform: uppercase;
+    color: #95accd;
+    font-size: 12px;
+}
+
+.stat-value {
+    margin: 12px 0 0;
+    font-size: clamp(30px, 3vw, 42px);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.section {
+    margin-top: 20px;
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    background: linear-gradient(120deg, rgba(18, 31, 61, 0.8), rgba(13, 24, 48, 0.82));
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.section-title {
+    margin: 0;
+    font-family: "Sora", sans-serif;
+    font-size: clamp(24px, 2.2vw, 30px);
+    letter-spacing: -0.01em;
+}
+
+.section-subtitle {
+    margin: 4px 0 0;
+    color: var(--muted);
+}
+
+.btn {
+    border: 0;
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+}
+
+.btn-primary {
+    background: linear-gradient(120deg, #abef30, #98dd25);
+    color: #162208;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: #dce8fa;
+    border: 1px solid rgba(168, 200, 255, 0.24);
+}
+
+.btn-return {
+    background: linear-gradient(120deg, #ff6f7c, #ef4a58);
+    color: #fff7f8;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+input,
+select {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid rgba(168, 200, 255, 0.22);
+    background: rgba(255, 255, 255, 0.06);
+    color: #f0f6ff;
+    padding: 14px 16px;
+    font: inherit;
+    outline: none;
+}
+
+select option {
+    color: #152443;
+    background: #f4f8ff;
+}
+
+select option:checked {
+    color: #f4f8ff;
+    background: #1e3568;
+}
+
+input::placeholder {
+    color: #97adc9;
+}
+
+input:focus,
+select:focus {
+    border-color: rgba(33, 210, 216, 0.54);
+    box-shadow: 0 0 0 4px rgba(33, 210, 216, 0.15);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+}
+
+.book-card {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(168, 200, 255, 0.18);
+    background: rgba(8, 14, 28, 0.8);
+}
+
+.book-cover {
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.book-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 42%, rgba(0, 0, 0, 0.52) 100%);
+}
+
+.book-body {
+    padding: 12px;
+}
+
+.book-title {
+    margin: 0;
+    font-family: "Sora", sans-serif;
+    font-size: 16px;
+}
+
+.book-meta {
+    margin: 4px 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.book-pill {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.in-stock {
+    background: rgba(164, 234, 42, 0.16);
+    color: #c9f681;
+}
+
+.low-stock {
+    background: rgba(255, 197, 99, 0.14);
+    color: #ffd99c;
+}
+
+.out-stock {
+    background: rgba(239, 74, 88, 0.17);
+    color: #ffb4bc;
+}
+
+.forms-grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.actions-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+#addBookModal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    place-items: center;
+    background: rgba(2, 6, 15, 0.8);
+    z-index: 40;
+}
+
+.modal-card {
+    width: min(460px, 92vw);
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--panel-strong);
+    padding: 20px;
+}
+
+.modal-card h3 {
+    margin: 0 0 12px;
+    font-family: "Sora", sans-serif;
+    font-size: 24px;
+}
+
+.modal-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+}
+
+#toastStack {
+    position: fixed;
+    right: 16px;
+    top: 16px;
+    z-index: 50;
+    display: grid;
+    gap: 10px;
+}
+
+.toast {
+    min-width: 260px;
+    max-width: min(400px, 90vw);
+    border-radius: 12px;
+    border: 1px solid rgba(173, 205, 255, 0.2);
+    background: rgba(8, 17, 36, 0.95);
+    color: #e8f3ff;
+    padding: 12px 14px;
+    transform: translateX(10px);
+    opacity: 0;
+    animation: toast-in 0.24s ease forwards;
+}
+
+.toast.success {
+    border-color: rgba(164, 234, 42, 0.5);
+}
+
+.toast.error {
+    border-color: rgba(239, 74, 88, 0.5);
+}
+
+@keyframes toast-in {
+    from {
+        transform: translateX(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 960px) {
+    .header-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filters {
+        grid-template-columns: 1fr;
+    }
+
+    .actions-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .dashboard {
+        width: min(1100px, 94vw);
+        margin-top: 18px;
+    }
+
+    .hero-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-image {
+        height: 46vw;
+        min-height: 180px;
+    }
+
+    .section {
+        padding: 16px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .status-chip {
+        display: none;
+    }
+}
+</style>
+</head>
+<body>
+<div class="dashboard">
+    <header class="header-card">
+        <div class="headline">
+            <small>Library Management System</small>
+            <h1>Command Center</h1>
+        </div>
+
+        <div class="header-actions">
+            <div class="status-chip">
+                <span class="status-dot"></span>
+                <span id="welcomeText">Welcome</span>
+            </div>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-media">
+            <div class="hero-gallery">
+                <div class="hero-image" style="background-image:url('/static/library-488690_1280.jpg');">
+                    <div class="hero-copy">
+                        <p>Manage books, members, and circulation in one fluid interface with live inventory visibility.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <p class="stat-label">Total Books</p>
+            <h2 class="stat-value" id="totalBooksValue">0</h2>
+        </article>
+        <article class="stat-card">
+            <p class="stat-label">Available</p>
+            <h2 class="stat-value" id="availableBooksValue">0</h2>
+        </article>
+        <article class="stat-card">
+            <p class="stat-label">Issued</p>
+            <h2 class="stat-value" id="issuedBooksValue">0</h2>
+        </article>
+        <article class="stat-card">
+            <p class="stat-label">Library Users</p>
+            <h2 class="stat-value" id="totalUsersValue">0</h2>
+        </article>
+    </section>
+
+    <section class="section">
+        <div class="section-head">
+            <div>
+                <h2 class="section-title">Books Inventory</h2>
+                <p class="section-subtitle">Search, filter, and manage books with visual cards.</p>
+            </div>
+            <button class="btn btn-primary" id="openAddBookModal">Add Book</button>
+        </div>
+
+        <div class="filters">
+            <input id="bookSearchInput" placeholder="Search title, author, ISBN">
+            <select id="categoryFilter">
+                <option value="">All categories</option>
+            </select>
+            <select id="stockFilter">
+                <option value="">All stock states</option>
+                <option value="in">In stock</option>
+                <option value="low">Low stock</option>
+                <option value="out">Out of stock</option>
+            </select>
+        </div>
+
+        <div class="grid" id="booksGrid"></div>
+    </section>
+
+    <div class="forms-grid">
+        <section class="section">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Add Library User</h2>
+                    <p class="section-subtitle">Register members instantly for circulation.</p>
+                </div>
+            </div>
+            <div class="actions-row">
+                <input id="userNameInput" placeholder="Full name">
+                <input id="userEmailInput" placeholder="Email">
+            </div>
+            <button class="btn btn-primary" id="createUserBtn" style="width:100%; margin-top:12px;">Create User</button>
+        </section>
+
+        <section class="section">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Issue / Return Books</h2>
+                    <p class="section-subtitle">Assign books to members and process returns quickly.</p>
+                </div>
+            </div>
+            <div class="actions-row">
+                <select id="issueBooksSelect">
+                    <option value="">Select available book</option>
+                </select>
+                <select id="issueUsersSelect">
+                    <option value="">Select user</option>
+                </select>
+            </div>
+            <div class="actions-row">
+                <button class="btn btn-primary" id="issueBookBtn">Issue Book</button>
+                <button class="btn btn-return" id="returnBookBtn">Return Book</button>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div id="addBookModal">
+    <form class="modal-card" id="addBookForm">
+        <h3>Add Book</h3>
+        <input name="title" placeholder="Title" required>
+        <input name="author" placeholder="Author" required>
+        <input name="isbn" placeholder="ISBN" required>
+        <input name="category" placeholder="Category" required>
+        <input name="quantity" type="number" min="0" placeholder="Quantity" required>
+        <div class="modal-actions">
+            <button class="btn btn-primary" type="submit">Save Book</button>
+            <button class="btn btn-secondary" type="button" id="closeAddBookModal">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<div id="toastStack" aria-live="polite"></div>
+
+<script>
+const token = localStorage.getItem("library_token");
+const userEmail = localStorage.getItem("library_user");
+
+if (!token) {
+    window.location = "/";
+}
+
+const totalBooksValue = document.getElementById("totalBooksValue");
+const availableBooksValue = document.getElementById("availableBooksValue");
+const issuedBooksValue = document.getElementById("issuedBooksValue");
+const totalUsersValue = document.getElementById("totalUsersValue");
+const welcomeText = document.getElementById("welcomeText");
+const booksGrid = document.getElementById("booksGrid");
+const categoryFilter = document.getElementById("categoryFilter");
+const stockFilter = document.getElementById("stockFilter");
+const bookSearchInput = document.getElementById("bookSearchInput");
+
+welcomeText.textContent = "Welcome, " + (userEmail || "admin") + "!";
+
+let allBooks = [];
+let allUsers = [];
+
+function showToast(message, type = "success") {
+    const stack = document.getElementById("toastStack");
+    const toast = document.createElement("div");
+    toast.className = "toast " + type;
+    toast.textContent = message;
+    stack.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(12px)";
+        setTimeout(() => toast.remove(), 220);
+    }, 2600);
+}
+
+function stockState(qty) {
+    if (qty <= 0) {
+        return { key: "out", label: "Out of stock", cls: "out-stock" };
+    }
+    if (qty <= 2) {
+        return { key: "low", label: "Low stock", cls: "low-stock" };
+    }
+    return { key: "in", label: "In stock", cls: "in-stock" };
+}
+
+function renderCategoryFilter() {
+    const categories = [...new Set(allBooks.map((book) => book.category).filter(Boolean))].sort();
+    categoryFilter.innerHTML = "<option value=''>All categories</option>";
+
+    categories.forEach((cat) => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        categoryFilter.appendChild(option);
+    });
+}
+
+function renderBooks() {
+    const query = bookSearchInput.value.trim().toLowerCase();
+    const selectedCategory = categoryFilter.value;
+    const selectedStock = stockFilter.value;
+
+    const filtered = allBooks.filter((book) => {
+        const state = stockState(Number(book.quantity));
+        const matchesQuery = !query ||
+            String(book.title || "").toLowerCase().includes(query) ||
+            String(book.author || "").toLowerCase().includes(query) ||
+            String(book.isbn || "").toLowerCase().includes(query);
+        const matchesCategory = !selectedCategory || book.category === selectedCategory;
+        const matchesStock = !selectedStock || state.key === selectedStock;
+        return matchesQuery && matchesCategory && matchesStock;
+    });
+
+    if (!filtered.length) {
+        booksGrid.innerHTML = "<p class='section-subtitle'>No books match your filters.</p>";
+        return;
+    }
+
+    booksGrid.innerHTML = "";
+
+    filtered.forEach((book, idx) => {
+        const state = stockState(Number(book.quantity));
+        const card = document.createElement("article");
+        card.className = "book-card";
+        const cover = "/static/book%20image.webp";
+
+        card.innerHTML =
+            "<div class='book-cover' style=\"background-image:url('" + cover + "')\"></div>" +
+            "<div class='book-body'>" +
+                "<h3 class='book-title'>" + (book.title || "Untitled") + "</h3>" +
+                "<p class='book-meta'>" + (book.author || "Unknown author") + "</p>" +
+                "<p class='book-meta'>ISBN: " + (book.isbn || "-") + " | Qty: " + Number(book.quantity || 0) + "</p>" +
+                "<span class='book-pill " + state.cls + "'>" + state.label + "</span>" +
+            "</div>";
+
+        booksGrid.appendChild(card);
+    });
+}
+
+function renderUsersSelect() {
+    const userSelect = document.getElementById("issueUsersSelect");
+    userSelect.innerHTML = "<option value=''>Select user</option>";
+    allUsers.forEach((user) => {
+        const opt = document.createElement("option");
+        opt.value = user.user_id;
+        opt.textContent = user.name;
+        userSelect.appendChild(opt);
+    });
+}
+
+function renderIssueBooksSelect() {
+    const bookSelect = document.getElementById("issueBooksSelect");
+    bookSelect.innerHTML = "<option value=''>Select available book</option>";
+
+    allBooks
+        .filter((book) => Number(book.quantity) > 0)
+        .forEach((book) => {
+            const opt = document.createElement("option");
+            opt.value = book.book_id;
+            opt.textContent = book.title;
+            bookSelect.appendChild(opt);
+        });
+}
+
+async function refreshAll() {
+    const res = await fetch("/api/dashboard-data", { cache: "no-store" });
+    if (!res.ok) {
+        throw new Error("Dashboard data is loading slowly");
+    }
+
+    const data = await res.json();
+
+    totalBooksValue.textContent = data.stats.total_books;
+    availableBooksValue.textContent = data.stats.available;
+    issuedBooksValue.textContent = data.stats.issued;
+    totalUsersValue.textContent = data.stats.users;
+
+    allBooks = Array.isArray(data.books) ? data.books : [];
+    allUsers = Array.isArray(data.users) ? data.users : [];
+
+    renderCategoryFilter();
+    renderBooks();
+    renderUsersSelect();
+    renderIssueBooksSelect();
+}
+
+document.getElementById("bookSearchInput").addEventListener("input", renderBooks);
+categoryFilter.addEventListener("change", renderBooks);
+stockFilter.addEventListener("change", renderBooks);
+
+const addBookModal = document.getElementById("addBookModal");
+document.getElementById("openAddBookModal").addEventListener("click", () => {
+    addBookModal.style.display = "grid";
+});
+
+document.getElementById("closeAddBookModal").addEventListener("click", () => {
+    addBookModal.style.display = "none";
+});
+
+addBookModal.addEventListener("click", (event) => {
+    if (event.target === addBookModal) {
+        addBookModal.style.display = "none";
+    }
+});
+
+document.getElementById("addBookForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const form = new FormData(event.target);
+    const payload = {
+        title: String(form.get("title") || "").trim(),
+        author: String(form.get("author") || "").trim(),
+        isbn: String(form.get("isbn") || "").trim(),
+        category: String(form.get("category") || "").trim(),
+        quantity: Number(form.get("quantity") || 0)
+    };
+
+    try {
+        const res = await fetch("/api/books", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || "Failed to save book");
+        }
+
+        showToast("Book added successfully", "success");
+        event.target.reset();
+        addBookModal.style.display = "none";
+        await refreshAll();
+    } catch (error) {
+        showToast(error.message || "Could not add book", "error");
+    }
+});
+
+document.getElementById("createUserBtn").addEventListener("click", async () => {
+    const name = document.getElementById("userNameInput").value.trim();
+    const email = document.getElementById("userEmailInput").value.trim();
+
+    if (!name || !email) {
+        showToast("Please enter name and email", "error");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email })
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || "Failed to create user");
+        }
+
+        showToast("User created successfully", "success");
+        document.getElementById("userNameInput").value = "";
+        document.getElementById("userEmailInput").value = "";
+        await refreshAll();
+    } catch (error) {
+        showToast(error.message || "Could not create user", "error");
+    }
+});
+
+document.getElementById("issueBookBtn").addEventListener("click", async () => {
+    const bookId = Number(document.getElementById("issueBooksSelect").value);
+    const userId = Number(document.getElementById("issueUsersSelect").value);
+
+    if (!bookId || !userId) {
+        showToast("Please select both book and user", "error");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/issue", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ book_id: bookId, user_id: userId })
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || "Failed to issue book");
+        }
+
+        showToast("Book issued", "success");
+        await refreshAll();
+    } catch (error) {
+        showToast(error.message || "Could not issue book", "error");
+    }
+});
+
+document.getElementById("returnBookBtn").addEventListener("click", async () => {
+    const bookId = Number(document.getElementById("issueBooksSelect").value);
+    const userId = Number(document.getElementById("issueUsersSelect").value);
+
+    if (!bookId || !userId) {
+        showToast("Please select both book and user", "error");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/return", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ book_id: bookId, user_id: userId })
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || "Failed to return book");
+        }
+
+        showToast("Book returned", "success");
+        await refreshAll();
+    } catch (error) {
+        showToast(error.message || "Could not return book", "error");
+    }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("library_token");
+    localStorage.removeItem("library_user");
+    window.location = "/";
+});
+
+refreshAll().catch((error) => {
+    showToast(error.message || "Failed to load dashboard", "error");
+});
+</script>
+</body>
+</html>
